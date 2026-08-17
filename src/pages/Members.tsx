@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Plus,
   Search,
@@ -17,8 +17,38 @@ import { members as initialMembers } from "../data/members";
 import type { Member } from "../types";
 
 const Members = () => {
-  const [memberList, setMemberList] =
-    useState<Member[]>(initialMembers);
+  // =========================================
+  // MEMBER DATA
+  // =========================================
+
+  const [memberList, setMemberList] = useState<Member[]>(() => {
+    const storedMembers = localStorage.getItem("gym_members");
+
+    if (storedMembers) {
+      try {
+        return JSON.parse(storedMembers) as Member[];
+      } catch {
+        return initialMembers;
+      }
+    }
+
+    return initialMembers;
+  });
+
+  // =========================================
+  // SAVE MEMBERS TO LOCAL STORAGE
+  // =========================================
+
+  useEffect(() => {
+    localStorage.setItem(
+      "gym_members",
+      JSON.stringify(memberList)
+    );
+  }, [memberList]);
+
+  // =========================================
+  // UI STATE
+  // =========================================
 
   const [search, setSearch] = useState("");
 
@@ -34,13 +64,13 @@ const Members = () => {
   const [editingMember, setEditingMember] =
     useState<Member | null>(null);
 
-  /* ================================
-     FILTER MEMBERS
-  ================================= */
+  // =========================================
+  // FILTER MEMBERS
+  // =========================================
 
   const filteredMembers = useMemo(() => {
     return memberList.filter((member) => {
-      const searchValue = search.toLowerCase();
+      const searchValue = search.toLowerCase().trim();
 
       const matchesSearch =
         member.name.toLowerCase().includes(searchValue) ||
@@ -55,9 +85,9 @@ const Members = () => {
     });
   }, [memberList, search, filter]);
 
-  /* ================================
-     STATISTICS
-  ================================= */
+  // =========================================
+  // STATISTICS
+  // =========================================
 
   const activeMembers = memberList.filter(
     (member) => member.status === "Active"
@@ -67,9 +97,9 @@ const Members = () => {
     (member) => member.status === "Expired"
   ).length;
 
-  /* ================================
-     ADD MEMBER
-  ================================= */
+  // =========================================
+  // ADD MEMBER
+  // =========================================
 
   const handleAddMember = (newMember: Member) => {
     setMemberList((current) => [
@@ -80,9 +110,9 @@ const Members = () => {
     setShowForm(false);
   };
 
-  /* ================================
-     EDIT MEMBER
-  ================================= */
+  // =========================================
+  // EDIT MEMBER
+  // =========================================
 
   const handleEditMember = (updatedMember: Member) => {
     setMemberList((current) =>
@@ -96,9 +126,9 @@ const Members = () => {
     setEditingMember(null);
   };
 
-  /* ================================
-     DELETE MEMBER
-  ================================= */
+  // =========================================
+  // DELETE MEMBER
+  // =========================================
 
   const handleDelete = (id: number) => {
     const member = memberList.find(
@@ -125,6 +155,10 @@ const Members = () => {
       setEditingMember(null);
     }
   };
+
+  // =========================================
+  // PAGE
+  // =========================================
 
   return (
     <div className="space-y-8">
@@ -164,7 +198,6 @@ const Members = () => {
           className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/10 transition hover:bg-blue-500"
         >
           <Plus size={18} />
-
           Add Member
         </button>
 
@@ -177,6 +210,7 @@ const Members = () => {
       <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
 
         {/* TOTAL */}
+
         <div className="group relative overflow-hidden rounded-2xl border border-white/5 bg-[#0D131D] p-5 transition hover:-translate-y-1 hover:border-blue-500/20">
 
           <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-blue-500/5 blur-3xl" />
@@ -211,6 +245,7 @@ const Members = () => {
         </div>
 
         {/* ACTIVE */}
+
         <div className="group relative overflow-hidden rounded-2xl border border-white/5 bg-[#0D131D] p-5 transition hover:-translate-y-1 hover:border-emerald-500/20">
 
           <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-emerald-500/5 blur-3xl" />
@@ -245,6 +280,7 @@ const Members = () => {
         </div>
 
         {/* EXPIRED */}
+
         <div className="group relative overflow-hidden rounded-2xl border border-white/5 bg-[#0D131D] p-5 transition hover:-translate-y-1 hover:border-red-500/20">
 
           <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-red-500/5 blur-3xl" />
@@ -288,7 +324,8 @@ const Members = () => {
 
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
 
-          {/* Search */}
+          {/* SEARCH */}
+
           <div className="flex w-full items-center gap-3 rounded-xl border border-white/5 bg-[#111925] px-4 py-3 lg:max-w-md">
 
             <Search
@@ -308,7 +345,8 @@ const Members = () => {
 
           </div>
 
-          {/* Filters */}
+          {/* FILTER */}
+
           <div className="flex items-center gap-2">
 
             {(
@@ -334,7 +372,8 @@ const Members = () => {
 
         </div>
 
-        {/* Results */}
+        {/* RESULTS */}
+
         <div className="mt-4 flex items-center justify-between border-t border-white/5 pt-4">
 
           <p className="text-xs text-slate-600">
@@ -372,18 +411,18 @@ const Members = () => {
         <MemberTable
           members={filteredMembers}
           onDelete={handleDelete}
-          onView={(member) =>
-            setSelectedMember(member)
-          }
-          onEdit={(member) =>
-            setEditingMember(member)
-          }
+          onView={(member) => {
+            setSelectedMember(member);
+          }}
+          onEdit={(member) => {
+            setEditingMember(member);
+          }}
         />
 
       </div>
 
       {/* =========================================
-          ADD MEMBER
+          ADD MEMBER MODAL
       ========================================= */}
 
       {showForm && (
@@ -394,7 +433,7 @@ const Members = () => {
       )}
 
       {/* =========================================
-          MEMBER DETAILS
+          VIEW MEMBER
       ========================================= */}
 
       {selectedMember && (

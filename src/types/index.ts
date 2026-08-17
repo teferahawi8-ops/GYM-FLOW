@@ -23,3 +23,12 @@ export interface Trainer {
   avatar: string;
 }
 
+interface MembershipPlan {
+  id: number;
+  name: string;
+  duration: number;
+  durationType: "Days" | "Months" | "Years";
+  price: number;
+  description: string;
+  status: "Active" | "Inactive";
+}
