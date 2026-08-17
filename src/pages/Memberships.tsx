@@ -156,9 +156,6 @@ const Memberships = () => {
     (plan) => plan.status === "Active"
   ).length;
 
-  const inactivePlans = plans.filter(
-    (plan) => plan.status === "Inactive"
-  ).length;
 
   const totalMembers = plans.reduce(
     (total, plan) => total + plan.members,

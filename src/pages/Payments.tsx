@@ -7,7 +7,6 @@ import {
   Clock,
   Trash2,
   X,
-  User,
   CreditCard,
   Banknote,
   Smartphone,

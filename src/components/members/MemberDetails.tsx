@@ -3,8 +3,6 @@ import {
   Mail,
   Phone,
   CalendarDays,
-  CreditCard,
-  User,
 } from "lucide-react";
 
 import type { Member } from "../../types";
@@ -20,14 +18,14 @@ const MemberDetails = ({
 }: MemberDetailsProps) => {
   return (
     <div
-  className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4 backdrop-blur-sm"
-  style={{
-    backgroundImage:
-      "linear-gradient(rgba(5,10,18,0.55), rgba(5,10,18,0.7)), url('/gym-background.png')",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-  }}
->
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 p-4 backdrop-blur-sm"
+      style={{
+        backgroundImage:
+          "linear-gradient(rgba(5,10,18,0.55), rgba(5,10,18,0.7)), url('/gym-background.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       {/* Modal */}
       <div className="w-full max-w-lg overflow-hidden rounded-2xl border border-white/10 bg-[#0D131D] shadow-2xl shadow-black/40">
 
